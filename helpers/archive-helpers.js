@@ -37,14 +37,20 @@ exports.readListOfUrls = function(){
 var urlStorage = exports.readListOfUrls();
 
 exports.isUrlInList = function(url){
-  // split into array before we check each url
-  console.log(url);
-  console.log(urlStorage);
-
+  // split into array before we check eac h url
   return (urlStorage.indexOf(url) !== -1);
 };
 
-exports.addUrlToList = function(){
+exports.addUrlToList = function(url){
+  // figure out basename
+  var website = path.basename(url);
+  console.log("website: " + website)
+  
+  // write it to sites.txt file
+  fs.appendFile(exports.paths.list, website+'\n')
+  
+  // append to text list
+  urlStorage.push(website)
 };
 
 exports.isURLArchived = function(){

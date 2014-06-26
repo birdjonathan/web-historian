@@ -1,6 +1,7 @@
 var path = require('path');
 var archive = require('../helpers/archive-helpers');
 var fs = require('fs');
+var qs = require('querystring');
 
 /* These headers will allow Cross-Origin Resource Sharing (CORS).
  * This CRUCIAL code allows this server to talk to websites that
@@ -33,10 +34,9 @@ exports.handleRequest = function (req, res) {
         // Check if we have archived webpage, if it is
         // present it, if not do 404
         // archive.paths.list
-        console.log('isurlinlist:'+archive.isUrlInList(path.basename(req.url)));
-        if (archive.isUrlInList(req.url)){
-          var archivedWebpage = fs.readFileSync('../archives/sites/' + req.url);
-          console.log("You are in the archived webpage if statement" + archivedWebpage);
+        var filename = path.basename(req.url)
+        if (archive.isUrlInList(filename)){
+          var archivedWebpage = fs.readFileSync('../archives/sites/' + filename);
           var statusCode = 200;
           res.writeHead(statusCode, headers);
           res.end(archivedWebpage);
@@ -49,18 +49,21 @@ exports.handleRequest = function (req, res) {
       break;
 
     case 'POST':
-      var statusCode = 201;
+      var statusCode = 302;
       
-      var data = '';
-      var result;
-      res.on('data', function(d) {
-        data += d;
+      var postdata = '';
+      req.on('data', function(d) {
+        postdata += d;   //postdata is a string
       });
-      res.on('end', function(d) {
-        result = JSON.parse(d);
+      req.on('end', function() {
+        var parsedPostData = qs.parse(postdata);
+        var url = parsedPostData.url;
+
+        archive.addUrlToList(url);
+        res.writeHead(statusCode, headers);
+        res.end();
       });
-      res.writeHead(statusCode, headers);
-      res.end('endofpost');
+      
       break;
     default:
       res.statusCode(404);
@@ -68,3 +71,5 @@ exports.handleRequest = function (req, res) {
       break;
   }
 };
+
+
