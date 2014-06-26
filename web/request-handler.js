@@ -28,22 +28,23 @@ exports.handleRequest = function (req, res) {
         var statusCode = 200;
         res.writeHead(statusCode, headers);
         res.end(homepage);
+
       } else {
         // Check if we have archived webpage, if it is
         // present it, if not do 404
-        
         // archive.paths.list
-       if (archive.isUrlInList(req.url)){
-        var archivedWebpage = fs.readFileSync('../archives/sites/' + req.url);
+        console.log('isurlinlist:'+archive.isUrlInList(path.basename(req.url)));
+        if (archive.isUrlInList(req.url)){
+          var archivedWebpage = fs.readFileSync('../archives/sites/' + req.url);
+          console.log("You are in the archived webpage if statement" + archivedWebpage);
           var statusCode = 200;
           res.writeHead(statusCode, headers);
           res.end(archivedWebpage);
         } else {
           var statusCode = 404; 
-        }
-        
-            
-          
+          res.writeHead(statusCode, headers);
+          res.end();
+        }          
       }
       break;
 

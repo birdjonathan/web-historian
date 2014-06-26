@@ -38,6 +38,9 @@ var urlStorage = exports.readListOfUrls();
 
 exports.isUrlInList = function(url){
   // split into array before we check each url
+  console.log(url);
+  console.log(urlStorage);
+
   return (urlStorage.indexOf(url) !== -1);
 };
 
