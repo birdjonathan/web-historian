@@ -1,5 +1,7 @@
 var path = require('path');
 var archive = require('../helpers/archive-helpers');
+var httpUtils = require('./http-helpers');
+
 var fs = require('fs');
 var qs = require('querystring');
 
@@ -14,6 +16,7 @@ var defaultCorsHeaders = {
   "access-control-allow-headers": "content-type, accept",
   "access-control-max-age": 10 // Seconds.
 };
+
 var homepage = fs.readFileSync('./public/index.html');
 var content = {};
 
@@ -50,7 +53,6 @@ exports.handleRequest = function (req, res) {
 
     case 'POST':
       var statusCode = 302;
-      
       var postdata = '';
       req.on('data', function(d) {
         postdata += d;   //postdata is a string
@@ -58,12 +60,14 @@ exports.handleRequest = function (req, res) {
       req.on('end', function() {
         var parsedPostData = qs.parse(postdata);
         var url = parsedPostData.url;
-
+        if (archive.isUrlInList(url)){
+          httpUtils.redirectUrl(res, url);
+        }
+      
         archive.addUrlToList(url);
         res.writeHead(statusCode, headers);
         res.end();
       });
-      
       break;
     default:
       res.statusCode(404);

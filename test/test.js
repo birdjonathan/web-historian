@@ -1,7 +1,5 @@
 var expect = require('chai').expect;
 var handler = require("../web/request-handler");
-var nodeStatic = require('node-static');
-
 var stubs = require("./stubs/stubs");
 var fs = require('fs');
 var archive = require("../helpers/archive-helpers");
