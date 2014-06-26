@@ -26,9 +26,19 @@ exports.initialize = function(pathsObj){
 // modularize your code. Keep it clean!
 
 exports.readListOfUrls = function(){
-};
+  var urlString = fs.readFileSync(exports.paths.list).toString('utf-8');
+  console.log(urlString);
+  var urlArray = urlString.split('\n');
+  console.log(urlArray);
+  return urlArray;
 
-exports.isUrlInList = function(){
+
+};
+var urlStorage = exports.readListOfUrls();
+
+exports.isUrlInList = function(url){
+  // split into array before we check each url
+  return (urlStorage.indexOf(url) !== -1);
 };
 
 exports.addUrlToList = function(){
