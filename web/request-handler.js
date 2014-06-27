@@ -18,6 +18,7 @@ var defaultCorsHeaders = {
 };
 
 var homepage = fs.readFileSync('./public/index.html');
+var loadingPage = fs.readFileSync('./public/loading.html');
 var content = {};
 
 exports.handleRequest = function (req, res) {
@@ -33,6 +34,11 @@ exports.handleRequest = function (req, res) {
         res.writeHead(statusCode, headers);
         res.end(homepage);
 
+      } else if (req.url === '/loading.html'){
+        var statusCode = 200;
+        res.writeHead(statusCode, headers);
+        res.end(loadingPage);
+        
       } else {
         // Check if we have archived webpage, if it is
         // present it, if not do 404
@@ -62,11 +68,14 @@ exports.handleRequest = function (req, res) {
         var url = parsedPostData.url;
         if (archive.isUrlInList(url)){
           httpUtils.redirectUrl(res, url);
+        } else {
+          httpUtils.redirectUrl(res, 'loading.html')
+          archive.addUrlToList(url);
+          res.writeHead(statusCode, headers);
+          res.end();
+          
         }
       
-        archive.addUrlToList(url);
-        res.writeHead(statusCode, headers);
-        res.end();
       });
       break;
     default:

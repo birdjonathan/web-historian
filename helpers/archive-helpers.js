@@ -27,16 +27,13 @@ exports.initialize = function(pathsObj){
 
 exports.readListOfUrls = function(callback){
   var urlString = fs.readFileSync(exports.paths.list).toString('utf-8');
-  console.log(urlString);
   var urlArray = urlString.split('\n');
-  console.log(urlArray);
   callback(urlArray);
-  // return urlArray;
-
-
 };
+
 var urlStorage;
 exports.readListOfUrls(function(urls){urlStorage = urls;});
+
 
 exports.isUrlInList = function(url){
   // split into array before we check eac h url
@@ -46,7 +43,6 @@ exports.isUrlInList = function(url){
 exports.addUrlToList = function(url){
   // figure out basename
   var website = path.basename(url);
-  console.log("website: " + website)
   
   // write it to sites.txt file
   fs.appendFile(exports.paths.list, website+'\n')
@@ -55,8 +51,12 @@ exports.addUrlToList = function(url){
   urlStorage.push(website)
 };
 
-exports.isURLArchived = function(){
+exports.isURLArchived = function(url){
+  var archiveFiles = fs.readdirSync(exports.paths.archivedSites);
+  return (url in archiveFiles);
 };
 
 exports.downloadUrls = function(){
+  
+
 };
